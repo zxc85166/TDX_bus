@@ -1,0 +1,33 @@
+{
+  "name": "tdx-cancan-bus",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "jssha": "^3.2.0",
+    "pinia": "^2.0.3",
+    "vue": "^3.2.22",
+    "vue-axios": "^3.4.0",
+    "vue-router": "^4.0.12",
+    "wicket": "^1.3.8"
+  },
+  "devDependencies": {
+    "@headlessui/vue": "^1.4.2",
+    "@heroicons/vue": "^1.0.5",
+    "@tailwindcss/aspect-ratio": "^0.3.0",
+    "@tailwindcss/forms": "^0.4.0-alpha.2",
+    "@tailwindcss/line-clamp": "^0.2.2",
+    "@tailwindcss/typography": "^0.5.0-alpha.3",
+    "@types/tailwindcss": "^2.2.4",
+    "@vicons/fa": "^0.11.0",
+    "@vicons/material": "^0.11.0",
+    "@vitejs/plugin-vue": "^1.9.4",
+    "autoprefixer": "^10.4.0",
+    "tailwindcss": "^3.0.0-alpha.2",
+    "vite": "^2.6.14"
+  }
+}
