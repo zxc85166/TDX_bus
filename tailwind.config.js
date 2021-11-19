@@ -9,6 +9,10 @@ module.exports = {
         blue: {
           DEFAULT: "#1CC8EE",
         },
+        gray: {
+          DEFAULT: "#1C1D1D",
+          light: "#414242",
+        },
       },
       fontFamily: {
         sans: ['"Inter var"', ...defaultTheme.fontFamily.sans],

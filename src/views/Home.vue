@@ -1,18 +1,32 @@
 <script setup>
 import Button from '@/components/Button.vue'
+import { useRouter } from "vue-router";
+const router = useRouter();
+//前往Bus
+function goToBus() {
+  router.push({
+    path: '/Bus'
+  })
+}
+//前往Transport
+function goToTransport() {
+  router.push({
+    path: '/Transport'
+  })
+}
 </script>
 
 <template>
   <div class="bg w-screen h-screen bg-cover bg-center mix-blend-lighten bg-black">
     <div class="grid grid-cols-1 md:grid-cols-2">
       <div class="hidden md:grid"></div>
-      <div class="pt-32 pl-12 md:pl-20 relative">
+      <div class="pt-20 md:pt-28 pl-12 md:pl-20 relative">
         <img src="@/assets/images/logo.png" class="w-[271px]" />
         <img src="@/assets/images/Vector.png" class="absolute pl-8 md:pl-36" />
-        <Button class="ml-[200px] md:ml-[330px] mt-[32px] z-50" msg="查詢公車" />
+        <Button @click="goToBus" class="ml-[200px] md:ml-[330px] mt-[32px] z-50" msg="查詢公車" />
         <img src="@/assets/images/circle.png" class="absolute pt-9 md:pl-[112px]" />
         <img src="@/assets/images/circle.png" class="absolute pl-[237px] md:pl-[350px] pt-[358px]" />
-        <Button class="ml-[150px] md:ml-[300px] mt-[200px] z-50" msg="查詢客運" />
+        <Button @click="goToTransport" class="ml-[150px] md:ml-[300px] mt-[200px] z-50" msg="查詢客運" />
         <img src="@/assets/images/circle.png" class="absolute pl-[61px] md:pl-[173px] pt-[281px]" />
       </div>
     </div>
