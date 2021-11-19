@@ -6,11 +6,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        yellow: {
-          DEFAULT: "#FED801",
-        },
-        gray: {
-          DEFAULT: "#7A7A7A",
+        blue: {
+          DEFAULT: "#1CC8EE",
         },
       },
       fontFamily: {
