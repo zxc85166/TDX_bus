@@ -138,6 +138,7 @@ function getStationData() {
   const city = cityName(citySelected.value);
   axios({
     method: "get",
+    //https://ptx.transportdata.tw/MOTC#!/CityBus/CityBusApi_Route_2
     url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city}/${input}?$select=RouteName%2CDepartureStopNameZh%2CDestinationStopNameZh&$top=15&$format=JSON
   `,
     headers: GetAuthorizationHeader(),
@@ -488,11 +489,19 @@ function GetAuthorizationHeader() {
       </div>
       <!-- 右欄 -->
       <div>
+        <span class="text-white" v-if="citySelected === '選擇縣市'">未</span>
         <span class="text-white">{{ citySelected }}</span>
         <div
           v-for="(Route, index) in data"
           :key="index"
-          class="even:bg-gray even:rounded-[10px] m-3 p-3"
+          class="
+            even:bg-gray
+            rounded-[10px]
+            m-3
+            p-3
+            cursor-pointer
+            hover:bg-gray-light
+          "
         >
           <p class="text-xl text-blue">{{ Route.RouteName.Zh_tw }}</p>
           <p class="text-white pt-3">
