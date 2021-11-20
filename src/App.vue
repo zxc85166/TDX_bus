@@ -1,11 +1,9 @@
 <script setup></script>
 
 <template>
-  <div>
-    <main>
-      <router-view />
-    </main>
-  </div>
+  <main>
+    <router-view />
+  </main>
 </template>
 <style>
 body {
