@@ -1,5 +1,6 @@
 import Home from "./views/Home.vue";
 import Bus from "./views/Bus.vue";
+import BusRoute from "./views/BusRoute.vue";
 import Transport from "./views/Transport.vue";
 import NotFound from "./views/NotFound.vue";
 
@@ -10,6 +11,11 @@ export const routes = [
     path: "/Bus",
     meta: { title: "Bus" },
     component: Bus,
+  },
+  {
+    path: "/BusRoute",
+    meta: { title: "BusRoute" },
+    component: BusRoute,
   },
   {
     path: "/Transport",

@@ -22,38 +22,33 @@ const keyoboard = [
 const cityData = [
   {
     name: "臺北市",
-    name2: "新北市",
-    name3: "基隆市",
-    name4: "桃園市",
-    name5: "新竹市",
+    name2: "新竹縣",
+    name3: "雲林縣",
+    name4: "屏東縣",
   },
   {
-    name: "新竹縣",
+    name: "新北市",
     name2: "苗栗縣",
-    name3: "臺中市",
-    name4: "南投縣",
-    name5: "彰化縣",
+    name3: "嘉義市",
+    name4: "臺東縣",
   },
   {
-    name: "雲林縣",
-    name2: "嘉義市",
+    name: "基隆市",
+    name2: "臺中市",
     name3: "嘉義縣",
-    name4: "臺南市",
-    name5: "高雄市",
+    name4: "花蓮縣",
   },
   {
-    name: "雲林縣",
-    name2: "嘉義市",
-    name3: "嘉義縣",
-    name4: "臺南市",
-    name5: "高雄市",
-  },
-  {
-    name: "屏東縣",
-    name2: "臺東縣",
-    name3: "花蓮縣",
+    name: "桃園市",
+    name2: "南投縣",
+    name3: "臺南市",
     name4: "宜蘭縣",
-    name5: "澎湖縣",
+  },
+  {
+    name: "新竹市",
+    name2: "彰化縣",
+    name3: "高雄市",
+    name4: "澎湖縣",
   },
 ];
 const cityData2 = [{ name: "金門縣" }, { name: "連江縣" }];
@@ -68,6 +63,8 @@ function selectCities(cityName) {
   citySelected.value = cityName;
   showcities.value = !showcities.value;
 }
+//error顯示
+const errtxt = ref('');
 //擊打鍵盤
 function keyin(data) {
   inputValue.value += data;
@@ -132,13 +129,22 @@ function cityName(cityName) {
       return "";
   }
 }
+//前往BusRoute
+function goToBusRoute(cityName) {
+  router.push({
+    path: "/BusRoute",
+    query: {
+      cityName: cityName,
+    },
+  });
+}
 // API傳送
 function getStationData() {
   const input = inputValue.value;
   const city = cityName(citySelected.value);
   axios({
     method: "get",
-    //https://ptx.transportdata.tw/MOTC#!/CityBus/CityBusApi_Route_2
+    //取得指定[縣市],[路線名稱]的路線資料
     url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city}/${input}?$select=RouteName%2CDepartureStopNameZh%2CDestinationStopNameZh&$top=15&$format=JSON
   `,
     headers: GetAuthorizationHeader(),
@@ -146,11 +152,25 @@ function getStationData() {
     .then((response) => {
       console.log("路線資料", response);
       data.value = response.data;
+      if (data.value.length === 0) {
+        errtxt.value = "該路線無資料"
+      } else {
+        errtxt.value = ''
+      }
     })
-    .catch((error) => console.log("error", error));
+    .catch((error) => {
+      errtxt.value = "查不到該路線"
+      data.value = [];
+      console.log("error", error);
+    });
 }
 watch(inputValue, (value) => {
-  if (value.length > 0) {
+  if (value.length > 0 && citySelected.value !== "選擇縣市") {
+    getStationData();
+  }
+});
+watch(citySelected, (value) => {
+  if (value.length > 0 && value !== "選擇縣市" && inputValue.value !== "") {
     getStationData();
   }
 });
@@ -186,303 +206,128 @@ function GetAuthorizationHeader() {
         <!-- logo 回首頁 -->
         <div class="flex items-center pb-4">
           <div @click="goToHome" class="cursor-pointer relative">
-            <img src="@/assets/images/logo.png" class="w-[132px]" alt="logo" />
-            <p class="text-blue absolute top-0 left-20">回首頁</p>
+            <img src="@/assets/images/logo_backhome.png" class="w-[132px]" alt="logo" />
           </div>
           <input
             ref="myinput"
             placeholder="選擇路線或手動輸入關鍵字"
             v-model="inputValue"
-            class="
-              form-input
-              ml-3
-              pl-4
-              py-3
-              rounded-xl
-              bg-gray
-              text-blue
-              h-10
-              w-60
-            "
+            class="form-input ml-3 pl-4 py-3 rounded-xl bg-gray text-blue h-10 w-60"
           />
         </div>
         <!-- 鍵盤 -->
-        <div
-          v-if="!showcities"
-          class="bg-gray rounded-[10px] w-[382px] h-[550px] p-5"
-        >
+        <div v-if="!showcities" class="bg-gray rounded-[10px] w-[382px] h-[550px] p-5">
           <div class="flex gap-3">
             <button
               @click="showcities = !showcities"
-              class="
-                hover:text-black hover:bg-blue
-                py-2
-                px-14
-                rounded-xl
-                border-2 border-blue
-                text-white
-                flex
-                items-center
-              "
+              class="hover:text-black hover:bg-blue py-2 px-14 rounded-xl border-2 border-blue text-white flex items-center"
             >
               <LocationOnRound class="w-5 h-5 mr-1" />
               {{ citySelected }}
             </button>
             <button
               @click="focusInput()"
-              class="
-                hover:text-black hover:bg-blue
-                py-2
-                px-7
-                rounded-xl
-                border-2 border-blue
-                text-blue
-              "
-            >
-              手動輸入
-            </button>
+              class="hover:text-black hover:bg-blue py-2 px-7 rounded-xl border-2 border-blue text-blue"
+            >手動輸入</button>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(key, index) in keyoboard" :key="index">
               <button
                 @click="keyin(key.text)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-5
-                  rounded-xl
-                  border-2 border-blue
-                "
+                class="hover:text-black hover:bg-blue py-2 px-5 rounded-xl border-2 border-blue"
                 :class="key.color"
-              >
-                {{ key.text }}
-              </button>
+              >{{ key.text }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(key, index) in keyoboard" :key="index">
               <button
                 @click="keyin(key.text2)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-5
-                  rounded-xl
-                  border-2 border-blue
-                "
+                class="hover:text-black hover:bg-blue py-2 px-5 rounded-xl border-2 border-blue"
                 :class="key.color"
-              >
-                {{ key.text2 }}
-              </button>
+              >{{ key.text2 }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(key, index) in keyoboard" :key="index">
               <button
                 @click="keyin(key.text3)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-5
-                  rounded-xl
-                  border-2 border-blue
-                "
+                class="hover:text-black hover:bg-blue py-2 px-5 rounded-xl border-2 border-blue"
                 :class="key.color"
-              >
-                {{ key.text3 }}
-              </button>
+              >{{ key.text3 }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <button
-              class="
-                hover:text-black hover:bg-blue
-                py-2
-                px-3
-                rounded-xl
-                border-2 border-blue
-                text-blue
-              "
-            >
-              幹線
-            </button>
+              class="hover:text-black hover:bg-blue py-2 px-3 rounded-xl border-2 border-blue text-blue"
+            >幹線</button>
             <button
-              class="
-                hover:text-black hover:bg-blue
-                py-2
-                px-3
-                rounded-xl
-                border-2 border-blue
-                text-blue
-              "
-            >
-              更多
-            </button>
+              class="hover:text-black hover:bg-blue py-2 px-3 rounded-xl border-2 border-blue text-blue"
+            >更多</button>
             <button
               @click="clearKey()"
-              class="
-                hover:text-black hover:bg-blue
-                py-2
-                px-5
-                rounded-xl
-                border-2 border-blue
-                text-blue
-              "
-            >
-              C
-            </button>
+              class="hover:text-black hover:bg-blue py-2 px-5 rounded-xl border-2 border-blue text-blue"
+            >C</button>
             <button
               @click="keyin(0)"
-              class="
-                hover:text-black hover:bg-blue
-                py-2
-                px-5
-                rounded-xl
-                border-2 border-blue
-                text-white
-              "
-            >
-              0
-            </button>
+              class="hover:text-black hover:bg-blue py-2 px-5 rounded-xl border-2 border-blue text-white"
+            >0</button>
             <button
               @click="deleteKey()"
-              class="
-                group
-                py-2
-                px-4
-                rounded-xl
-                border-2 border-blue
-                hover:bg-blue
-              "
+              class="group py-2 px-4 rounded-xl border-2 border-blue hover:bg-blue"
             >
-              <BackspaceRound
-                class="text-blue group-hover:text-black w-5 h-5"
-              />
+              <BackspaceRound class="text-blue group-hover:text-black w-5 h-5" />
             </button>
           </div>
         </div>
         <!-- 城市 -->
-        <div
-          v-if="showcities"
-          class="bg-gray rounded-[10px] w-[382px] h-[550px] p-5"
-        >
+        <div v-if="showcities" class="bg-gray rounded-[10px] w-[382px] h-[550px] p-5">
           <div class="flex gap-3 pt-2">
             <div v-for="(city, index) in cityData" :key="index">
               <button
                 @click="selectCities(city.name)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-[3px]
-                  rounded-xl
-                  border-2 border-blue
-                  text-blue
-                "
-              >
-                {{ city.name }}
-              </button>
+                class="hover:text-black hover:bg-blue py-2 px-[3px] rounded-xl border-2 border-blue text-blue"
+              >{{ city.name }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(city, index) in cityData" :key="index">
               <button
                 @click="selectCities(city.name3)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-[3px]
-                  rounded-xl
-                  border-2 border-blue
-                  text-blue
-                "
-              >
-                {{ city.name3 }}
-              </button>
+                class="hover:text-black hover:bg-blue py-2 px-[3px] rounded-xl border-2 border-blue text-blue"
+              >{{ city.name3 }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(city, index) in cityData" :key="index">
               <button
                 @click="selectCities(city.name2)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-[3px]
-                  rounded-xl
-                  border-2 border-blue
-                  text-blue
-                "
-              >
-                {{ city.name2 }}
-              </button>
+                class="hover:text-black hover:bg-blue py-2 px-[3px] rounded-xl border-2 border-blue text-blue"
+              >{{ city.name2 }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(city, index) in cityData" :key="index">
               <button
                 @click="selectCities(city.name3)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-[3px]
-                  rounded-xl
-                  border-2 border-blue
-                  text-blue
-                "
-              >
-                {{ city.name3 }}
-              </button>
+                class="hover:text-black hover:bg-blue py-2 px-[3px] rounded-xl border-2 border-blue text-blue"
+              >{{ city.name3 }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(city, index) in cityData" :key="index">
               <button
                 @click="selectCities(city.name4)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-[3px]
-                  rounded-xl
-                  border-2 border-blue
-                  text-blue
-                "
-              >
-                {{ city.name4 }}
-              </button>
-            </div>
-          </div>
-          <div class="flex gap-3 pt-2">
-            <div v-for="(city, index) in cityData" :key="index">
-              <button
-                @click="selectCities(city.name5)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-[3px]
-                  rounded-xl
-                  border-2 border-blue
-                  text-blue
-                "
-              >
-                {{ city.name5 }}
-              </button>
+                class="hover:text-black hover:bg-blue py-2 px-[3px] rounded-xl border-2 border-blue text-blue"
+              >{{ city.name4 }}</button>
             </div>
           </div>
           <div class="flex gap-3 pt-2">
             <div v-for="(city, index) in cityData2" :key="index">
               <button
                 @click="selectCities(city.name)"
-                class="
-                  hover:text-black hover:bg-blue
-                  py-2
-                  px-[3px]
-                  rounded-xl
-                  border-2 border-blue
-                  text-blue
-                "
-              >
-                {{ city.name }}
-              </button>
+                class="hover:text-black hover:bg-blue py-2 px-[3px] rounded-xl border-2 border-blue text-blue"
+              >{{ city.name }}</button>
             </div>
           </div>
         </div>
@@ -491,24 +336,20 @@ function GetAuthorizationHeader() {
       <div>
         <span class="text-white" v-if="citySelected === '選擇縣市'">未</span>
         <span class="text-white">{{ citySelected }}</span>
+        <p class="text-gray-light">{{ errtxt }}</p>
         <div
           v-for="(Route, index) in data"
           :key="index"
-          class="
-            even:bg-gray
-            rounded-[10px]
-            m-3
-            p-3
-            cursor-pointer
-            hover:bg-gray-light
-          "
+          class="even:bg-gray rounded-[10px] m-3 p-3 cursor-pointer hover:bg-gray-light"
         >
-          <p class="text-xl text-blue">{{ Route.RouteName.Zh_tw }}</p>
-          <p class="text-white pt-3">
-            {{ Route.DepartureStopNameZh }}
-            <span class="pl-2 pr-3 text-blue">往</span
-            >{{ Route.DestinationStopNameZh }}
-          </p>
+          <div @click="goToBusRoute()">
+            <p class="text-xl text-blue">{{ Route.RouteName.Zh_tw }}</p>
+            <p class="text-white pt-3">
+              {{ Route.DepartureStopNameZh }}
+              <span class="pl-2 pr-3 text-blue">往</span>
+              {{ Route.DestinationStopNameZh }}
+            </p>
+          </div>
         </div>
       </div>
     </div>

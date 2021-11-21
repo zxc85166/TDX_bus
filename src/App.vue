@@ -7,6 +7,6 @@
 </template>
 <style>
 body {
-  background: rgb(0, 0, 0);
+  background: #131414;
 }
 </style>
