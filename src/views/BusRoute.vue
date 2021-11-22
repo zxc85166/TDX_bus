@@ -17,15 +17,16 @@ function backToBus() {
     router.push({ path: "/bus", });
 }
 onMounted(() => {
-    if (store.RouteData.length !== 0) {
+    if (store.routeName) {
         getBus();
-    }
+    } else { console.log(store.routeName, store.city); }
 });
+const backData = ref([]);
 //ApI
 function getBus() {
     axios({
         method: 'get',
-        url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city}/${routeName}`,
+        url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${store.city}/${store.routeName}?$top=30&$format=JSON`,
         headers: GetAuthorizationHeader()
     })
         .then((response) => {
@@ -46,10 +47,10 @@ function getBus() {
 
             // 組出我要的資料格式
             cachebackData.forEach((item) => { // [a,a,b,c]
-                const index = backData.map(item => item.plateNumb).indexOf(item.PlateNumb)
+                const index = backData.value.map(item => item.plateNumb).indexOf(item.PlateNumb)
 
                 if (index === -1) { // 代表沒找到
-                    backData.push({
+                    backData.value.push({
                         plateNumb: item.PlateNumb, //車牌號碼
                         stops: [{
                             estimateTime: item.EstimateTime,//到站時間預估(秒) 
@@ -57,7 +58,7 @@ function getBus() {
                         }]
                     })
                 } else { // 有找到
-                    backData[index].stops.push({
+                    backData.value[index].stops.push({
                         estimateTime: item.EstimateTime,//到站時間預估(秒) 
                         stopUID: item.StopUID//站牌唯一識別代碼
                     });
@@ -65,9 +66,8 @@ function getBus() {
 
 
             })
-            console.log('backData', backData)
-
-            getRoute();
+            console.log('backData.value', backData.value)
+            // getRoute();
         })
         .catch((error) => console.log('error', error))
 }
@@ -93,14 +93,25 @@ function GetAuthorizationHeader() {
 }
 </script>
 <template>
-    <header class="pt-12 grid place-items-center items-start grid-cols-3 w-full h-40 bg-black">
-        <LessThanFilled @click="backToBus" class="w-5 h-5 text-white cursor-pointer" />
-        <img
-            @click="goHome"
-            src="@/assets/images/logo_backhome.png"
-            class="w-[132px] cursor-pointer"
-            alt="logo"
-        />
+    <header class="w-full h-40 bg-black">
+        <div class="pt-12 grid place-items-center items-start grid-cols-3">
+            <LessThanFilled @click="backToBus" class="w-5 h-5 text-white cursor-pointer" />
+            <img
+                @click="goHome"
+                src="@/assets/images/logo_backhome.png"
+                class="w-[132px] cursor-pointer"
+                alt="logo"
+            />
+        </div>
+        <div class="grid grid-cols-2 place-items-center justify-evenly mt-3 text-white">
+            <p class="border-b-4 pb-4 border-blue">往 捷運劍潭站</p>
+            <p class="border-b-4 pb-4 border-blue">往 捷運劍潭站</p>
+        </div>
     </header>
-    <div class="grid grid-cols-2"></div>
+    <div class="grid grid-cols-2 text-white">
+        <div v-for="(backData, index) in backData" :key="index">
+            <p>{{ backData.plateNumb }}</p>
+            <p>{{ backData.stops }}</p>
+        </div>
+    </div>
 </template>

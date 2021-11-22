@@ -1,11 +1,12 @@
 <script setup>
 import { useRouter } from "vue-router";
+import { useStore } from "@/store/store.js";
 import axios from "axios";
 import jsSHA from "jssha";
 import { ref, watch } from "vue";
 import { LocationOnRound, BackspaceRound } from "@vicons/material";
 const router = useRouter();
-
+const store = useStore();
 //回首頁
 function goToHome() {
   router.push({
@@ -130,18 +131,17 @@ function cityName(cityName) {
   }
 }
 //前往BusRoute
-function goToBusRoute(cityName) {
-  router.push({
-    path: "/BusRoute",
-    query: {
-      cityName: cityName,
-    },
-  });
+function goToBusRoute(city) {
+  store.routeName = city,
+    router.push({
+      path: "/BusRoute",
+    });
 }
 // API傳送
 function getStationData() {
   const input = inputValue.value;
   const city = cityName(citySelected.value);
+  store.city = city;
   axios({
     method: "get",
     //取得指定[縣市],[路線名稱]的路線資料
@@ -153,7 +153,7 @@ function getStationData() {
       console.log("路線資料", response);
       data.value = response.data;
       if (data.value.length === 0) {
-        errtxt.value = "該路線無資料"
+        errtxt.value = "無該路線資料"
       } else {
         errtxt.value = ''
       }
@@ -342,7 +342,7 @@ function GetAuthorizationHeader() {
           :key="index"
           class="even:bg-gray rounded-[10px] m-3 p-3 cursor-pointer hover:bg-gray-light"
         >
-          <div @click="goToBusRoute()">
+          <div @click="goToBusRoute(Route.RouteName.Zh_tw)">
             <p class="text-xl text-blue">{{ Route.RouteName.Zh_tw }}</p>
             <p class="text-white pt-3">
               {{ Route.DepartureStopNameZh }}

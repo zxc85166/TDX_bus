@@ -5,6 +5,7 @@ export const useStore = defineStore({
   id: "myGlobalState",
   // state: 返回函數
   state: () => ({
-    RouteData: [],
+    city: "",
+    routeName: "",
   }),
 });
