@@ -9,9 +9,9 @@ function goToBus() {
   });
 }
 //前往Transport
-function goToTransport() {
+function goToNearBy() {
   router.push({
-    path: "/Transport",
+    path: "/NearBy",
   });
 }
 </script>
@@ -26,7 +26,7 @@ function goToTransport() {
         <Button @click="goToBus" class="ml-[200px] md:ml-[330px] mt-[32px] z-50" msg="查詢公車" />
         <img src="@/assets/images/circle.png" class="absolute pt-9 md:pl-[112px]" />
         <img src="@/assets/images/circle.png" class="absolute pl-[237px] md:pl-[350px] pt-[358px]" />
-        <Button @click="goToTransport" class="ml-[150px] md:ml-[300px] mt-[200px] z-50" msg="查詢客運" />
+        <Button @click="goToNearBy" class="ml-[150px] md:ml-[300px] mt-[200px] z-50" msg="附近公車站" />
         <img src="@/assets/images/circle.png" class="absolute pl-[61px] md:pl-[173px] pt-[281px]" />
       </div>
     </div>

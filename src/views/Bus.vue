@@ -131,8 +131,10 @@ function cityName(cityName) {
   }
 }
 //前往BusRoute
-function goToBusRoute(city) {
+function goToBusRoute(city, go, back) {
   store.routeName = city,
+    store.RoutegoName = go,
+    store.RoutebackName = back,
     router.push({
       path: "/BusRoute",
     });
@@ -150,9 +152,9 @@ function getStationData() {
     headers: GetAuthorizationHeader(),
   })
     .then((response) => {
-      console.log("路線資料", response);
-      data.value = response.data;
-      if (data.value.length === 0) {
+      // API接收存在store
+      store.routeData = response.data;
+      if (response.data.length === 0) {
         errtxt.value = "無該路線資料"
       } else {
         errtxt.value = ''
@@ -174,8 +176,8 @@ watch(citySelected, (value) => {
     getStationData();
   }
 });
-// API接收
-const data = ref([]);
+
+
 // API 驗證用
 function GetAuthorizationHeader() {
   var AppID = import.meta.env.VITE_APP_AppID;
@@ -206,7 +208,7 @@ function GetAuthorizationHeader() {
         <!-- logo 回首頁 -->
         <div class="flex items-center pb-4">
           <div @click="goToHome" class="cursor-pointer relative">
-            <img src="@/assets/images/logo_backhome.png" class="w-[132px]" alt="logo" />
+            <img src="@/assets/images/backhome.png" class="w-[132px]" alt="logo" />
           </div>
           <input
             ref="myinput"
@@ -338,11 +340,13 @@ function GetAuthorizationHeader() {
         <span class="text-white">{{ citySelected }}</span>
         <p class="text-gray-light">{{ errtxt }}</p>
         <div
-          v-for="(Route, index) in data"
+          v-for="(Route, index) in store.routeData"
           :key="index"
           class="even:bg-gray rounded-[10px] m-3 p-3 cursor-pointer hover:bg-gray-light"
         >
-          <div @click="goToBusRoute(Route.RouteName.Zh_tw)">
+          <div
+            @click="goToBusRoute(Route.RouteName.Zh_tw, Route.DepartureStopNameZh, Route.DestinationStopNameZh)"
+          >
             <p class="text-xl text-blue">{{ Route.RouteName.Zh_tw }}</p>
             <p class="text-white pt-3">
               {{ Route.DepartureStopNameZh }}

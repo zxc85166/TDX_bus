@@ -5,7 +5,14 @@ export const useStore = defineStore({
   id: "myGlobalState",
   // state: 返回函數
   state: () => ({
+    //bus路由往busRoutes傳送資料
     city: "",
     routeName: "",
+    RoutegoName: "",
+    RoutebackName: "",
+    //bus路線資料
+    routeData: [],
+    //附近資料
+    NearByData: [],
   }),
 });
