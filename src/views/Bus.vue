@@ -14,11 +14,11 @@ function goToHome() {
   });
 }
 const keyoboard = [
-  { text: "紅", text2: "綠", text3: "橘", color: "text-blue" },
-  { text: "藍", text2: "棕", text3: "小", color: "text-blue" },
-  { text: "1", text2: "4", text3: "7", color: "text-white" },
-  { text: "2", text2: "5", text3: "8", color: "text-white" },
-  { text: "3", text2: "6", text3: "9", color: "text-white" },
+  { text: "紅", text2: "綠", text3: "橘", text4: "F", text5: "跳蛙", color: "text-blue" },
+  { text: "藍", text2: "棕", text3: "小", text4: "R", text5: "通勤", color: "text-blue" },
+  { text: "1", text2: "4", text3: "7", text4: "T", text5: "南軟", color: "text-white" },
+  { text: "2", text2: "5", text3: "8", text4: "快", text5: "先導", color: "text-white" },
+  { text: "3", text2: "6", text3: "9", text4: "內科", text5: "夜間", color: "text-white" },
 ];
 const cityData = [
   {
@@ -81,6 +81,8 @@ const myinput = ref(null);
 function focusInput() {
   myinput.value.focus();
 }
+//show其他選項
+const showother = ref(false);
 //city名字轉換成英文
 function cityName(cityName) {
   switch (cityName) {
@@ -270,6 +272,7 @@ function GetAuthorizationHeader() {
               class="hover:text-black hover:bg-blue py-2 px-3 rounded-xl border-2 border-blue text-blue"
             >幹線</button>
             <button
+              @click="showother = !showother"
               class="hover:text-black hover:bg-blue py-2 px-3 rounded-xl border-2 border-blue text-blue"
             >更多</button>
             <button
@@ -286,6 +289,37 @@ function GetAuthorizationHeader() {
             >
               <BackspaceRound class="text-blue group-hover:text-black w-5 h-5" />
             </button>
+          </div>
+          <!-- show更多 -->
+          <div v-show="showother">
+            <div class="flex gap-3 pt-2">
+              <div v-for="(key, index) in keyoboard" :key="index">
+                <button
+                  @click="keyin(key.text4)"
+                  class="hover:text-black hover:bg-blue py-2 px-4 rounded-xl border-2 border-blue"
+                  :class="key.color"
+                >{{ key.text4 }}</button>
+              </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <div v-for="(key, index) in keyoboard" :key="index">
+                <button
+                  @click="keyin(key.text5)"
+                  class="hover:text-black hover:bg-blue py-2 px-2 rounded-xl border-2 border-blue"
+                  :class="key.color"
+                >{{ key.text5 }}</button>
+              </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button
+                @click="keyin('市民')"
+                class="hover:text-black hover:bg-blue py-2 px-2 rounded-xl border-2 border-blue text-blue"
+              >市民</button>
+              <button
+                @click="keyin('其他')"
+                class="hover:text-black hover:bg-blue py-2 px-2 rounded-xl border-2 border-blue text-blue"
+              >其他</button>
+            </div>
           </div>
         </div>
         <!-- 城市 -->
