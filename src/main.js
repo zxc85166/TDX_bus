@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import { createPinia } from "pinia";
+
 const app = createApp(App);
 
 const router = createRouter({

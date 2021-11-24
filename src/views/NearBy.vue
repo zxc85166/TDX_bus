@@ -1,11 +1,16 @@
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "@/store/store.js";
 import axios from "axios";
 import jsSHA from "jssha";
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 const router = useRouter();
 const store = useStore();
+const isLoading = ref(false);
+const fullPage = ref(false);
+const onCancel = () => console.log('User cancelled the loader.')
 //回首頁
 function goToHome() {
   router.push({
@@ -14,6 +19,7 @@ function goToHome() {
 }
 onMounted(() => {
   if (navigator.geolocation) {
+    isLoading.value = true;
     navigator.geolocation.getCurrentPosition(
       function (position) {
         const longitude = position.coords.longitude; // 經度
@@ -48,9 +54,11 @@ function getStationData(latitude, longitude) {
       const result = [...new Set(data.map(item => JSON.stringify(item)))].map(item => JSON.parse(item));
       store.NearByData = result;
       console.log(store.NearByData);
+      isLoading.value = false;
     })
     .catch((error) => {
       console.log("error", error);
+      isLoading.value = false;
     });
 }
 // API 驗證用
@@ -83,7 +91,14 @@ function GetAuthorizationHeader() {
     <p class="text-white place-items-center text-center">我的附近</p>
     <div></div>
   </header>
+
   <div class="mx-24 my-10">
+    <loading
+      v-model:active="isLoading"
+      :can-cancel="true"
+      :on-cancel="onCancel"
+      :is-full-page="fullPage"
+    />
     <div
       v-for="(NearByData,index) in store.NearByData "
       :key="index"

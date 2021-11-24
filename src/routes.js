@@ -2,6 +2,7 @@ import Home from "./views/Home.vue";
 import Bus from "./views/Bus.vue";
 import BusRoute from "./views/BusRoute.vue";
 import NearBy from "./views/NearBy.vue";
+import InterCityBus from "./views/InterCityBus.vue";
 import NotFound from "./views/NotFound.vue";
 
 /** @type {import('vue-router').RouterOptions['routes']} */
@@ -21,6 +22,11 @@ export const routes = [
     path: "/NearBy",
     meta: { title: "NearBy" },
     component: NearBy,
+  },
+  {
+    path: "/InterCityBus",
+    meta: { title: "InterCityBus" },
+    component: InterCityBus,
   },
   { path: "/:path(.*)", component: NotFound },
 ];

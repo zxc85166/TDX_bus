@@ -14,6 +14,12 @@ function goToNearBy() {
     path: "/NearBy",
   });
 }
+//前往InterCityBus
+function goToInterCityBus() {
+  router.push({
+    path: "/InterCityBus",
+  });
+}
 </script>
 
 <template>
@@ -27,7 +33,11 @@ function goToNearBy() {
         <img src="@/assets/images/circle.png" class="absolute pt-9 md:pl-[112px]" />
         <img src="@/assets/images/circle.png" class="absolute pl-[237px] md:pl-[350px] pt-[358px]" />
         <Button @click="goToNearBy" class="ml-[150px] md:ml-[300px] mt-[200px] z-50" msg="附近公車站" />
-        <img src="@/assets/images/circle.png" class="absolute pl-[61px] md:pl-[173px] pt-[281px]" />
+        <Button
+          @click="goToInterCityBus"
+          class="ml-[10px] md:ml-[125px] mt-[265px] z-50"
+          msg="查詢客運"
+        />
       </div>
     </div>
   </div>

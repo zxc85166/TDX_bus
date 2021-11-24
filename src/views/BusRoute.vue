@@ -8,6 +8,9 @@ import { ref, onMounted } from "vue";
 
 const router = useRouter();
 const store = useStore();
+//isActive
+const LeftActive = ref(true);
+const RightActive = ref(false);
 //回首頁
 function goHome() {
     router.push({ path: "/", });
@@ -19,7 +22,7 @@ function backToBus() {
 onMounted(() => {
     if (store.routeName) {
         getBus();
-    } else { console.log(store.routeName, store.city); }
+    }
 });
 const backData = ref([]);
 const goData = ref([]);
@@ -31,7 +34,6 @@ function getBus() {
         headers: GetAuthorizationHeader()
     })
         .then((response) => {
-            console.log('預估', response.data)
             const data = response.data;
             //按站序排列
             data.sort(function (a, b) {
@@ -40,11 +42,17 @@ function getBus() {
             //時間處理
             data.forEach(element => {
                 element.EstimateTime = Math.floor(element.EstimateTime / 60);
-                if (element.EstimateTime) {
-                    element.EstimateTime = element.EstimateTime + '分';
-                } else if (element.EstimateTime == '0') {
+                if (element.EstimateTime == '0') {
                     element.EstimateTime = '已到達';
+                } else if (element.EstimateTime == '1') {
+                    element.EstimateTime = '即將到站';
+                } else if (!element.EstimateTime) {
+                    element.EstimateTime = '';
                 }
+                else {
+                    element.EstimateTime = element.EstimateTime + '分';
+                };
+
                 switch (element.StopStatus) {
                     case 0:
                         element.StopStatus = '';
@@ -67,15 +75,10 @@ function getBus() {
             const cachegoData = data.filter((item) => !item.Direction);
             const cachebackData = data.filter((item) => item.Direction);
 
-            // console.log('cachegoData', cachegoData)
-
 
 
             goData.value = cachegoData;
             backData.value = cachebackData;
-            // getRoute();
-            console.log('backData.value', backData.value)
-            console.log('goData.value', goData.value)
         })
         .catch((error) => console.log('error', error))
 }
@@ -112,18 +115,26 @@ function GetAuthorizationHeader() {
             />
         </div>
         <div class="grid grid-cols-2 place-items-center justify-evenly mt-3 text-white">
-            <p class="border-b-4 pb-4 border-blue">
+            <p
+                @click="LeftActive = false; RightActive = true"
+                class="pb-4 border-blue cursor-pointer"
+                :class="[LeftActive ? LeftActive : 'border-b-4']"
+            >
                 <span class="text-blue">往</span>
                 {{ store.RoutegoName }}
             </p>
-            <p class="border-b-4 pb-4 border-blue">
+            <p
+                @click="LeftActive = true; RightActive = false"
+                class="pb-4 border-blue cursor-pointer"
+                :class="RightActive ? RightActive : 'border-b-4'"
+            >
                 <span class="text-blue">往</span>
                 {{ store.RoutebackName }}
             </p>
         </div>
     </header>
-    <div class="grid grid-cols-2 my-10 text-white">
-        <div class="grid gap-3 items-center mx-auto">
+    <div class="grid grid-cols-1 my-10 text-white">
+        <div v-show="LeftActive" class="grid gap-3 items-center mx-auto">
             <div v-for="(backData,index) in backData" :key="index" class="flex gap-3">
                 <p
                     v-if="backData.EstimateTime"
@@ -133,7 +144,7 @@ function GetAuthorizationHeader() {
                 <p>{{ backData.StopName.Zh_tw }}</p>
             </div>
         </div>
-        <div class="grid gap-3 items-center mx-auto">
+        <div v-show="RightActive" class="grid gap-3 items-center mx-auto">
             <div v-for="(goData,index) in goData" :key="index" class="flex gap-3">
                 <p
                     v-if="goData.EstimateTime"
