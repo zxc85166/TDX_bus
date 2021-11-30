@@ -101,7 +101,7 @@ function cityName(cityName) {
     case "臺中市":
       return "Taichung";
     case "南投縣":
-      return "Nantou";
+      return "NantouCounty";
     case "彰化縣":
       return "Changhua";
     case "雲林縣":

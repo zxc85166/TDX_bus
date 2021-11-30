@@ -17,6 +17,13 @@ function goToHome() {
     path: '/'
   })
 }
+//下一頁
+function GoToNearByRoute(NearByData) {
+  store.NearByRouteData = NearByData;
+  router.push({
+    path: 'NearByRoute'
+  })
+}
 onMounted(() => {
   if (navigator.geolocation) {
     isLoading.value = true;
@@ -41,8 +48,6 @@ onMounted(() => {
 function getStationData(latitude, longitude) {
   axios({
     method: "get",
-    //取得指定[位置,範圍]的全臺公車站牌資料
-    // url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Stop/NearBy?$select=StopName&$top=10&$spatialFilter=nearby(${latitude}%2C%20${longitude}%2C%201000)&$format=JSON`,
     //取得指定[位置,範圍]的全臺公車站位資料
     url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Station/NearBy?$select=StationName%2CStops&$spatialFilter=nearby(${latitude}%2C%20${longitude}%2C%20500)&$format=JSON`,
     headers: GetAuthorizationHeader(),
@@ -50,9 +55,7 @@ function getStationData(latitude, longitude) {
     .then((response) => {
       // API接收存在store
       const data = response.data;
-      //去除物件中重複的值
-      const result = [...new Set(data.map(item => JSON.stringify(item)))].map(item => JSON.parse(item));
-      store.NearByData = result;
+      store.NearByData = data;
       console.log(store.NearByData);
       isLoading.value = false;
     })
@@ -104,12 +107,14 @@ function GetAuthorizationHeader() {
       :key="index"
       class="odd:bg-gray rounded-[10px] m-3 p-3 cursor-pointer hover:bg-gray-light"
     >
-      <p class="text-blue text-lg">{{ NearByData.StationName.Zh_tw }}</p>
-      <p
-        v-for="(Stops,index) in NearByData.Stops "
-        :key="index"
-        class="text-white text-sm"
-      >{{ Stops.RouteName.Zh_tw }}</p>
+      <div @click="GoToNearByRoute(NearByData)">
+        <p class="text-blue text-lg">{{ NearByData.StationName.Zh_tw }}</p>
+        <p
+          v-for="(Stops,index) in NearByData.Stops "
+          :key="index"
+          class="text-white text-sm"
+        >{{ Stops.RouteName.Zh_tw }}</p>
+      </div>
     </div>
   </div>
 </template>

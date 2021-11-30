@@ -14,5 +14,6 @@ export const useStore = defineStore({
     routeData: [],
     //附近資料
     NearByData: [],
+    NearByRouteData: [],
   }),
 });

@@ -66,9 +66,18 @@ function selectCities(cityName) {
 }
 //error顯示
 const errtxt = ref('');
-//擊打鍵盤
+//點擊鍵盤
 function keyin(data) {
-  inputValue.value += data;
+  const str = "紅藍綠棕橘小"
+  if (str.includes(data)) {
+    inputValue.value = data;
+  } else {
+    inputValue.value += data;
+  }
+}
+//選擇紅藍幹線等路線
+function selectColor(data) {
+  inputValue.value = data;
 }
 function deleteKey() {
   inputValue.value = inputValue.value.slice(0, -1);
@@ -101,7 +110,7 @@ function cityName(cityName) {
     case "臺中市":
       return "Taichung";
     case "南投縣":
-      return "Nantou";
+      return "NantouCounty";
     case "彰化縣":
       return "Changhua";
     case "雲林縣":
@@ -268,7 +277,7 @@ function GetAuthorizationHeader() {
           </div>
           <div class="flex gap-3 pt-2">
             <button
-              @click="keyin('幹線')"
+              @click="selectColor('幹線')"
               class="hover:text-black hover:bg-blue py-2 px-3 rounded-xl border-2 border-blue text-blue"
             >幹線</button>
             <button
@@ -295,7 +304,7 @@ function GetAuthorizationHeader() {
             <div class="flex gap-3 pt-2">
               <div v-for="(key, index) in keyoboard" :key="index">
                 <button
-                  @click="keyin(key.text4)"
+                  @click="selectColor(key.text4)"
                   class="hover:text-black hover:bg-blue py-2 px-4 rounded-xl border-2 border-blue"
                   :class="key.color"
                 >{{ key.text4 }}</button>
@@ -304,7 +313,7 @@ function GetAuthorizationHeader() {
             <div class="flex gap-3 pt-2">
               <div v-for="(key, index) in keyoboard" :key="index">
                 <button
-                  @click="keyin(key.text5)"
+                  @click="selectColor(key.text5)"
                   class="hover:text-black hover:bg-blue py-2 px-2 rounded-xl border-2 border-blue"
                   :class="key.color"
                 >{{ key.text5 }}</button>
@@ -312,11 +321,11 @@ function GetAuthorizationHeader() {
             </div>
             <div class="flex gap-3 pt-2">
               <button
-                @click="keyin('市民')"
+                @click="selectColor('市民')"
                 class="hover:text-black hover:bg-blue py-2 px-2 rounded-xl border-2 border-blue text-blue"
               >市民</button>
               <button
-                @click="keyin('其他')"
+                @click="selectColor('其他')"
                 class="hover:text-black hover:bg-blue py-2 px-2 rounded-xl border-2 border-blue text-blue"
               >其他</button>
             </div>
