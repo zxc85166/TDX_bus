@@ -1,7 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useStore } from "@/store/store.js";
-
 const router = useRouter();
 const store = useStore();
 console.log(store.NearByRouteData)
@@ -11,7 +10,6 @@ function goToHome() {
     path: '/'
   })
 }
-
 </script>
 
 <template>
