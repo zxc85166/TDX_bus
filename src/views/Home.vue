@@ -32,12 +32,12 @@ function goToInterCityBus() {
         <Button @click="goToBus" class="ml-[200px] md:ml-[330px] mt-[32px] z-50" msg="查詢公車" />
         <img src="@/assets/images/circle.png" class="absolute pt-9 md:pl-[112px]" />
         <img src="@/assets/images/circle.png" class="absolute pl-[237px] md:pl-[350px] pt-[358px]" />
-        <Button @click="goToNearBy" class="ml-[150px] md:ml-[300px] mt-[200px] z-50" msg="附近公車站" />
-        <Button
+        <Button @click="goToNearBy" class="ml-[10px] md:ml-[125px] mt-[265px] z-50" msg="附近公車站" />
+        <!-- <Button
           @click="goToInterCityBus"
           class="ml-[10px] md:ml-[125px] mt-[265px] z-50"
           msg="查詢客運"
-        />
+        />-->
       </div>
     </div>
   </div>
